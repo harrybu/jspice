@@ -33,6 +33,8 @@ import org.knowm.jspice.simulate.dcoperatingpoint.DCOperatingPointResult;
  */
 public class Inductor extends ReactiveElement {
 
+  public static final String SPICE_PREFIX_ID = "L";
+
   private double inductance;
 
   public static final Double INDUCTOR_DC_RESISTANCE = 0.00000000001;
@@ -45,7 +47,8 @@ public class Inductor extends ReactiveElement {
    */
   public Inductor(String id, double inductance) {
 
-    super(id);
+    super(_prependSpicePrefixID(id,
+                                SPICE_PREFIX_ID));
     this.inductance = inductance;
   }
 
@@ -74,10 +77,12 @@ public class Inductor extends ReactiveElement {
     // no contribution
 
     // resistor
-    Set<String> set = new HashSet<>(3);
+    Set<String> set = new HashSet<String>(3);
     set.add(nodes[0]);
     set.add(nodes[1]);
-    set.add(getId());
+    if (timeStep != null) {
+      set.add(getId());
+    }
 
     return set;
   }
@@ -91,73 +96,75 @@ public class Inductor extends ReactiveElement {
     for (int i = 0; i < columnQuantities.length; i++) {
       if (columnQuantities[i].equals(nodes[0]) || columnQuantities[i].equals(nodes[1])) {
         columnQuantities[i] = "V(" + columnQuantities[i] + ")";
-      } else if (columnQuantities[i].equals(getId())) {
-        columnQuantities[i] = "I(" + columnQuantities[i] + ")";
+      }
+      else if (columnQuantities[i].equals(getId())) {
+        if (timeStep != null) {
+          columnQuantities[i] = "I(" + columnQuantities[i] + ")";
+        }
       }
     }
   }
 
   @Override
-  public void stampG(double[][] G, Netlist netList, DCOperatingPointResult dcOperatingPointResult, Map<String, Integer> nodeID2ColumnIdxMap,
-      String[] nodes, Double timeStep) {
+  public void stampG(double[][] G, Netlist netList, DCOperatingPointResult dcOperatingPointResult, Map<String, Integer> nodeID2ColumnIdxMap, String[] nodes, Double timeStep) {
 
     double r_eq = 0.0;
     if (timeStep != null) {
       r_eq = inductance / timeStep;
+
+
+      int idxA = nodeID2ColumnIdxMap.get(nodes[0]);
+      int idxB = nodeID2ColumnIdxMap.get(nodes[1]);
+      int idxI = nodeID2ColumnIdxMap.get(getId());
+
+      // create stamp
+      double[][] stamp = new double[3][3];
+
+      stamp[0][0] = 0.0;
+      stamp[0][1] = 0.0;
+      stamp[0][2] = 1.0;
+      stamp[1][0] = 0.0;
+      stamp[1][1] = 0.0;
+      stamp[1][2] = -1.0;
+      stamp[2][0] = 1.0;
+      stamp[2][1] = -1.0;
+      stamp[2][2] = -1.0 * r_eq;
+
+      // apply stamp
+      G[idxA][idxA] += stamp[0][0];
+      G[idxA][idxB] += stamp[0][1];
+      G[idxA][idxI] += stamp[0][2];
+      G[idxB][idxA] += stamp[1][0];
+      G[idxB][idxB] += stamp[1][1];
+      G[idxB][idxI] += stamp[1][2];
+      G[idxI][idxA] += stamp[2][0];
+      G[idxI][idxB] += stamp[2][1];
+      G[idxI][idxI] += stamp[2][2];
     }
-
-    int idxA = nodeID2ColumnIdxMap.get(nodes[0]);
-    int idxB = nodeID2ColumnIdxMap.get(nodes[1]);
-    int idxI = nodeID2ColumnIdxMap.get(getId());
-
-    // create stamp
-    double[][] stamp = new double[3][3];
-
-    stamp[0][0] = 0.0;
-    stamp[0][1] = 0.0;
-    stamp[0][2] = 1.0;
-    stamp[1][0] = 0.0;
-    stamp[1][1] = 0.0;
-    stamp[1][2] = -1.0;
-    stamp[2][0] = 1.0;
-    stamp[2][1] = -1.0;
-    stamp[2][2] = -1.0 * r_eq;
-
-    // apply stamp
-    G[idxA][idxA] += stamp[0][0];
-    G[idxA][idxB] += stamp[0][1];
-    G[idxA][idxI] += stamp[0][2];
-    G[idxB][idxA] += stamp[1][0];
-    G[idxB][idxB] += stamp[1][1];
-    G[idxB][idxI] += stamp[1][2];
-    G[idxI][idxA] += stamp[2][0];
-    G[idxI][idxB] += stamp[2][1];
-    G[idxI][idxI] += stamp[2][2];
   }
 
   @Override
-  public void stampRHS(double[] RHS, DCOperatingPointResult dcOperatingPointResult, Map<String, Integer> nodeID2ColumnIdxMap, String[] nodes,
-      Double timeStep) {
+  public void stampRHS(double[] RHS, DCOperatingPointResult dcOperatingPointResult, Map<String, Integer> nodeID2ColumnIdxMap, String[] nodes, Double timeStep) {
 
     double v_eq = 0.0;
     if (timeStep != null) {
       v_eq = -1.0 * inductance / timeStep * dcOperatingPointResult.getValue("I(" + getId() + ")");
+
+      // create stamp
+      double[] stamp = new double[3];
+
+      stamp[0] = 0.0;
+      stamp[1] = 0.0;
+      stamp[2] = v_eq;
+
+      // apply stamp
+      int idxA = nodeID2ColumnIdxMap.get(nodes[0]);
+      int idxB = nodeID2ColumnIdxMap.get(nodes[1]);
+      int idxI = nodeID2ColumnIdxMap.get(getId());
+      RHS[idxA] += stamp[0];
+      RHS[idxB] += stamp[1];
+      RHS[idxI] += stamp[2];
     }
-
-    // create stamp
-    double[] stamp = new double[3];
-
-    stamp[0] = 0.0;
-    stamp[1] = 0.0;
-    stamp[2] = v_eq;
-
-    // apply stamp
-    int idxA = nodeID2ColumnIdxMap.get(nodes[0]);
-    int idxB = nodeID2ColumnIdxMap.get(nodes[1]);
-    int idxI = nodeID2ColumnIdxMap.get(getId());
-    RHS[idxA] += stamp[0];
-    RHS[idxB] += stamp[1];
-    RHS[idxI] += stamp[2];
   }
 
   @Override

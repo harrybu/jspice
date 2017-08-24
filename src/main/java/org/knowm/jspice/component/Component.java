@@ -100,4 +100,14 @@ public abstract class Component implements Sweepable {
 
     return vt;
   }
+  
+    protected static String _prependSpicePrefixID(String id,
+                                                String prefix) {
+    return id.startsWith(prefix) || id.startsWith(prefix.toLowerCase()) ? id : prefix + id;
+  }
+  
+  protected static String _appendPostfixID(String id,
+                                           String postfix) {
+    return id.endsWith(postfix) || id.endsWith(postfix.toLowerCase()) ? id : id + postfix;
+  }
 }

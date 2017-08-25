@@ -32,6 +32,9 @@ import org.knowm.jspice.simulate.dcoperatingpoint.DCOperatingPointResult;
  * @author timmolter
  */
 public class VCVS extends Source {
+    
+  public static final String SPICE_PREFIX_ID = "E";
+
 
   private double gain; // a.k.a. `k`
 
@@ -43,7 +46,8 @@ public class VCVS extends Source {
    */
   public VCVS(String id, double transconductance) {
 
-    super(id);
+    super(_prependSpicePrefixID(id,
+              SPICE_PREFIX_ID));
     this.gain = transconductance;
   }
 

@@ -41,6 +41,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class Resistor extends LinearElement {
 
+  public static final String SPICE_PREFIX_ID = "R";
+
+  public static double gMin = 1E-12;
+
+
   @Valid
   @NotNull
   @JsonProperty("resistance")
@@ -55,14 +60,19 @@ public class Resistor extends LinearElement {
    */
   public Resistor(@JsonProperty("id") String id, @JsonProperty("resistance") double resistance) {
 
-    super(id);
+    super(_prependSpicePrefixID(id,
+                                SPICE_PREFIX_ID));
     this.resistance = resistance;
   }
 
   @Override
   public void setSweepValue(double value) {
-
-    this.resistance = value;
+//    double rMax = 1 / gMin;
+    if (value == 0.0) {
+      this.resistance = gMin;
+    } else {
+      this.resistance = value;
+    }
   }
 
   @Override
@@ -90,7 +100,7 @@ public class Resistor extends LinearElement {
   @Override
   public Set<String> getGMatrixColumnIDs(String[] nodes, Double timeStep) {
 
-    Set<String> set = new HashSet<>(2);
+    Set<String> set = new HashSet<String>(2);
     set.add(nodes[0]);
     set.add(nodes[1]);
 

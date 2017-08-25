@@ -32,6 +32,9 @@ import org.knowm.jspice.simulate.dcoperatingpoint.DCOperatingPointResult;
  * @author timmolter
  */
 public class DCVoltage extends Source {
+    
+  public static final String SPICE_PREFIX_ID = "V";
+
 
   private double dcVoltage;
 
@@ -43,7 +46,8 @@ public class DCVoltage extends Source {
    */
   public DCVoltage(String id, double dcVoltage) {
 
-    super(id);
+      super(_prependSpicePrefixID(id,
+              SPICE_PREFIX_ID));
     this.dcVoltage = dcVoltage;
   }
 

@@ -26,13 +26,18 @@ package org.knowm.jspice.component.element.nonlinear;
  */
 public class NMOS extends MOSFET {
 
+  public static final String NMOS_POSTFIX_ID = "_N";
+
   /**
    * Constructor
-   *
+   * 
    * @param id
    */
   public NMOS(String id, double Vthresh) {
 
-    super(id, Vthresh);
+    super(_appendPostfixID(id,
+                           NMOS_POSTFIX_ID), Vthresh);
   }
+
+
 }

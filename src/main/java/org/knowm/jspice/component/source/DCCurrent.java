@@ -38,6 +38,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author timmolter
  */
 public class DCCurrent extends Source {
+    
+    public static final String SPICE_PREFIX_ID = "I";
+
 
   @Valid
   @NotNull
@@ -53,7 +56,8 @@ public class DCCurrent extends Source {
   @JsonCreator
   public DCCurrent(@JsonProperty("id") String id, @JsonProperty("current") double dcCurrent) {
 
-    super(id);
+    super(_prependSpicePrefixID(id,
+            SPICE_PREFIX_ID));
     this.dcCurrent = dcCurrent;
   }
 

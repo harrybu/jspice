@@ -38,6 +38,8 @@ import org.knowm.jspice.simulate.dcoperatingpoint.DCOperatingPointResult;
  */
 public class Diode extends Component implements NonlinearComponent {
 
+  public static final String SPICE_PREFIX_ID = "D";
+
   /**
    * saturation current
    */
@@ -51,7 +53,8 @@ public class Diode extends Component implements NonlinearComponent {
    */
   public Diode(String id, double saturationCurrent) {
 
-    super(id);
+    super(_prependSpicePrefixID(id,
+                                SPICE_PREFIX_ID));
     this.IS = saturationCurrent;
   }
 
@@ -112,7 +115,7 @@ public class Diode extends Component implements NonlinearComponent {
     // no contribution
 
     // resistor
-    Set<String> set = new HashSet<>(2);
+    Set<String> set = new HashSet<String>(2);
     set.add(nodes[0]);
     set.add(nodes[1]);
 

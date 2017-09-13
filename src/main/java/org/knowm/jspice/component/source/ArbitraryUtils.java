@@ -30,15 +30,20 @@ import org.knowm.jspice.simulate.dcoperatingpoint.DCOperatingPointResult;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
+/**
+ * @author Tim Molter,
+ *         Harald Bucher (KIT)
+ */
 public class ArbitraryUtils {
 
-  public static double getArbitraryValue(DCOperatingPointResult dcOperatingPointResult) {
+  public static double getArbitraryValue(DCOperatingPointResult dcOperatingPointResult,
+                                         String strExpression) {
 
     Map<String, Double> symbol2ValueMap = new HashMap<>();
     String[] symbolicReplacements = new String[]{"A", "B", "C", "D", "E", "F", "G", "H"};
 
-    String jspiceExpression = "I(x)*I(x)".replaceAll("\\s", "");
-    String exp4jExpression = jspiceExpression;
+    String exp4jExpression = strExpression.replaceAll("\\s",
+                                                      "");
     String subFunction;
     int count = 0;
     while ((subFunction =

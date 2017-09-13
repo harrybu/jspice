@@ -31,9 +31,9 @@ public class I1IAR1R2 extends Netlist {
   public I1IAR1R2() {
 
     // build netlist, the nodes can be named anything except for ground whose node is always labeled "0"
-    addNetListComponent(new NetlistDCCurrent("x", 2.0, "1", "0"));
+    addNetListComponent(new NetlistDCCurrent("Ix", 2.0, "1", "0"));
     addNetListComponent(new NetlistResistor("R1", 1, "1", "0"));
-    addNetListComponent(new NetlistDCCurrentArbitrary("y", "I(x)*I(x)", "2", "0"));
+    addNetListComponent(new NetlistDCCurrentArbitrary("y", "I(Ix)*I(Ix)", "2", "0"));
     addNetListComponent(new NetlistResistor("R2", 1, "2", "0"));
   }
 }

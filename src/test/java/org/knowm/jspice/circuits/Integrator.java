@@ -35,6 +35,6 @@ public class Integrator extends Netlist {
     addNetListComponent(new NetlistResistor("R1", 1, "1", "0"));
     addNetListComponent(new NetlistVCCS("Gx", 1, "0", "x", "1", "0"));
     addNetListComponent(new NetlistCapacitor("Cx", 1, "x", "0"));
-    addNetListComponent(new NetlistResistor("Rx", 1_000_000_000, "x", "0"));
+    addNetListComponent(new NetlistResistor("Rx", 10000, "x", "0"));
   }
 }

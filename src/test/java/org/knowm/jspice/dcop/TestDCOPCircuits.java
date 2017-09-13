@@ -36,10 +36,12 @@ import org.knowm.jspice.circuits.I1V1R6;
 import org.knowm.jspice.circuits.I1VAR1R2;
 import org.knowm.jspice.circuits.I2R4;
 import org.knowm.jspice.circuits.I2R6;
+import org.knowm.jspice.circuits.Integrator;
 import org.knowm.jspice.circuits.NMOSInverter;
 import org.knowm.jspice.circuits.PMOSInverter;
 import org.knowm.jspice.circuits.V1D1;
 import org.knowm.jspice.circuits.V1R1;
+import org.knowm.jspice.circuits.V1R1C1;
 import org.knowm.jspice.circuits.V1R3;
 import org.knowm.jspice.circuits.V1R4;
 import org.knowm.jspice.circuits.V2R4;
@@ -243,6 +245,35 @@ public class TestDCOPCircuits {
     //    System.out.println(Arrays.toString(dcOpResult.getV()));
 
     assertThat(dcOpResult.getValue("V(out)"), is(closeTo(0, .01)));
+  }
+  
+  @Test
+  public void testIntegrator() {
+
+    Netlist circuit = new Integrator();
+    DCOperatingPointResult dcOpResult = new DCOperatingPoint(circuit).run();
+    // System.out.println(dcOpResult.toString());
+    // System.out.println(Arrays.toString(dcOpResult.getV()));
+
+    assertThat(dcOpResult.getValue("V(x)"),
+               is(closeTo(10000,
+                          .0001)));
+    assertThat(dcOpResult.getValue("I(Gx)"),
+               is(closeTo(-1.0,
+                          .001)));
+  }
+  
+  @Test
+  public void testV1R1C1() {
+
+    Netlist circuit = new V1R1C1();
+    DCOperatingPointResult dcOpResult = new DCOperatingPoint(circuit).run();
+    // System.out.println(dcOpResult.toString());
+    // System.out.println(Arrays.toString(dcOpResult.getV()));
+
+    assertThat(dcOpResult.getValue("V(2)"),
+               is(closeTo(0.6,
+                          .0001)));
   }
 
   @Test

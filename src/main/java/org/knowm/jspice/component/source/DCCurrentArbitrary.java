@@ -60,7 +60,7 @@ public class DCCurrentArbitrary extends DCCurrent implements NonlinearComponent 
 
     double value = 0.01;
     if (dcOperatingPointResult != null) {
-      value = ArbitraryUtils.getArbitraryValue(dcOperatingPointResult);
+      value = ArbitraryUtils.getArbitraryValue(dcOperatingPointResult, expression);
     }
     // System.out.println("value: " + value);
     stamp[0] = -1 * value;

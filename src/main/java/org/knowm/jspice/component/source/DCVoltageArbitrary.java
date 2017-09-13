@@ -61,7 +61,7 @@ public class DCVoltageArbitrary extends DCVoltage implements NonlinearComponent 
 
     double value = 1.0;
     if (dcOperatingPointResult != null) {
-      value = ArbitraryUtils.getArbitraryValue(dcOperatingPointResult);
+      value = ArbitraryUtils.getArbitraryValue(dcOperatingPointResult, expression);
     }
     stamp[2] = value;
 

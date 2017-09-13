@@ -31,13 +31,9 @@ public class V1R1C1 extends Netlist {
 
   public V1R1C1() {
 
-    // define capacitor
-    Capacitor capacitor1 = new Capacitor("C1", 16E-8);
-    capacitor1.setInitialCondition(0.6);
-
     // build netlist, the nodes can be named anything except for ground whose node is always labeled "0"
     addNetListComponent(new NetlistDCVoltage("V1", 0.0, "1", "0"));
     addNetListComponent(new NetlistResistor("R1", 160000, "1", "2"));
-    addNetListComponent(new NetlistCapacitor("C1", 16E-8, "2", "0"));
+    addNetListComponent(new NetlistCapacitor("C1", 16E-8, 0.6, "2", "0"));
   }
 }

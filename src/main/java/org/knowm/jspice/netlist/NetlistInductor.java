@@ -8,6 +8,9 @@ import org.knowm.jspice.component.element.reactive.Inductor;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * @author Harald Bucher
+ */
 public class NetlistInductor extends NetlistReactiveElement {
 
   @Valid
@@ -30,7 +33,7 @@ public class NetlistInductor extends NetlistReactiveElement {
 
   public NetlistInductor(String id, double inductance, double initialCondition, String... nodes) {
 
-    super(new Inductor(id, inductance), nodes);
+    super(new Inductor(id, inductance), initialCondition, nodes);
     this.inductance = inductance;
     this.initialCondition = initialCondition;
   }
@@ -42,7 +45,7 @@ public class NetlistInductor extends NetlistReactiveElement {
       @JsonProperty("initialCondition") double initialCondition,
       @JsonProperty("nodes") String nodes) {
 
-    super(new Inductor(id, inductance), nodes);
+    super(new Inductor(id, inductance), initialCondition, nodes);
     this.inductance = inductance;
     this.initialCondition = initialCondition;
 

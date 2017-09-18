@@ -219,6 +219,18 @@ public final class DCOperatingPointResult {
       double current = resistor.getCurrent(voltageDiff);
       deviceLabels2Value.put("I(" + resistor.getId() + ")", current);
     }
+    
+    // resistor arbitrarys
+    for (NetlistComponent netListComponent : netlist.getNetListResistorArbitrarys()) {
+
+      Resistor resistorArbitrary = (Resistor) netListComponent.getComponent();
+      double voltageA = getValue("V(" + netListComponent.getNodesAsArray()[0] + ")");
+      double voltageB = getValue("V(" + netListComponent.getNodesAsArray()[1] + ")");
+      double voltageDiff = voltageA - voltageB;
+      double current = resistorArbitrary.getCurrent(voltageDiff);
+      deviceLabels2Value.put("I(" + resistorArbitrary.getId() + ")",
+                             current);
+    }
 
     // diodes
     for (NetlistComponent netListComponent : netlist.getNetListDiodes()) {

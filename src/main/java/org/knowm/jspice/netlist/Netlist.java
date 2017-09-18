@@ -77,6 +77,13 @@ public class Netlist implements Konfigurable {
    */
   @JsonIgnore
   protected List<NetlistComponent> netListResistors = new ArrayList<>();
+  
+  /**
+   * Resistor Arbitrary List
+   */
+  @JsonIgnore
+  protected final List<NetlistComponent> netListResistorsArbitrary = new ArrayList<>();
+
 
   /**
    * DCVoltage Source List
@@ -213,6 +220,10 @@ public class Netlist implements Konfigurable {
     if (netListComponent instanceof NetlistResistor) {
 
       netListResistors.add(netListComponent);
+    }
+    // add to ResistorArbitrary list
+    else if (netListComponent instanceof NetlistResistorArbitrary) {
+      netListResistorsArbitrary.add(netListComponent);
     }
 
     // add to DCVoltage list
@@ -356,6 +367,10 @@ public class Netlist implements Konfigurable {
       sb.append(component.toString());
       sb.append(returnString);
     }
+    for (NetlistComponent component : netListResistorsArbitrary) {
+        sb.append(component.toString());
+        sb.append(returnString);
+    }
     for (NetlistComponent component : netListDCVoltageSources) {
       sb.append(component.toString());
       sb.append(returnString);
@@ -424,6 +439,10 @@ public class Netlist implements Konfigurable {
     for (NetlistComponent component : netListResistors) {
       sb.append(component.toSpiceString());
       sb.append(returnString);
+    }
+    for (NetlistComponent component : netListResistorsArbitrary) {
+        sb.append(component.toSpiceString());
+        sb.append(returnString);
     }
     for (NetlistComponent component : netListDCVoltageSources) {
 
@@ -630,6 +649,10 @@ public class Netlist implements Konfigurable {
     for (NetlistComponent netlistComponent : netlistComponents) {
       addNetListComponent(netlistComponent);
     }
+  }
+
+  public List<NetlistComponent> getNetListResistorArbitrarys() {
+      return netListResistorsArbitrary;
   }
 
 }

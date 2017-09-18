@@ -27,6 +27,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 
 import org.junit.Test;
+import org.knowm.jspice.circuits.ArbitraryLoadCircuit;
 import org.knowm.jspice.circuits.CMOSInverterCircuit;
 import org.knowm.jspice.circuits.I1IAR1R2;
 import org.knowm.jspice.circuits.I1R1;
@@ -261,6 +262,23 @@ public class TestDCOPCircuits {
     assertThat(dcOpResult.getValue("I(Gx)"),
                is(closeTo(-1.0,
                           .001)));
+  }
+  
+  @Test
+  public void testxLoadCircuit() {
+
+    Netlist circuit = new ArbitraryLoadCircuit();
+    DCOperatingPointResult dcOpResult = new DCOperatingPoint(circuit).run();
+    //    System.out.println(dcOpResult.toString());
+    //    System.out.println(Arrays.toString(dcOpResult.getV()));
+
+    assertThat(dcOpResult.getValue("V(rin)"),
+               is(closeTo(11.99,
+                          1e-6)));
+    assertThat(dcOpResult.getValue("I(V1)"),
+               is(closeTo(-1.0,
+                          1e-6)));
+
   }
   
   @Test

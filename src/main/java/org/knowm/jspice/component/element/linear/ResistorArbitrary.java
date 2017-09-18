@@ -5,31 +5,35 @@ package org.knowm.jspice.component.element.linear;
 
 import java.util.Map;
 
+import org.knowm.jspice.component.ArbitraryValue;
 import org.knowm.jspice.component.NonlinearComponent;
+import org.knowm.jspice.component.source.ArbitraryUtils;
 import org.knowm.jspice.netlist.Netlist;
 import org.knowm.jspice.simulate.dcoperatingpoint.DCOperatingPointResult;
+
 
 /**
  * @author Harald Bucher
  *
  */
-public abstract class ResistorArbitrary extends Resistor implements NonlinearComponent {
+public class ResistorArbitrary extends Resistor implements NonlinearComponent, ArbitraryValue {
 
-  public abstract double getArbitraryResistance(DCOperatingPointResult dcOperatingPointResult);
 
+  private final String expression;
 
   /**
    * @param id
    * @param resistance
    */
-  public ResistorArbitrary(String id, double resistance) {
-    super(id, resistance);
+  public ResistorArbitrary(String id, double defaultResistance, String expression) {
+    super(id, defaultResistance);
+    this.expression = expression;
   }
 
   @Override
   public String toString() {
 
-    return "ResisotorArbitrary [id=" + getId() + "]";
+    return "ResistorArbitrary [id=" + getId() + ", resistance=" + expression + "]";
   }
 
   @Override
@@ -47,7 +51,8 @@ public abstract class ResistorArbitrary extends Resistor implements NonlinearCom
 
     double resistance = getSweepableValue();
     if (dcOperatingPointResult != null) {
-      resistance = getArbitraryResistance(dcOperatingPointResult);
+      resistance = ArbitraryUtils.getArbitraryValue(dcOperatingPointResult,
+                                          expression);
       setSweepValue(resistance);
     }
     double conductance = 1 / getSweepableValue();
@@ -64,6 +69,11 @@ public abstract class ResistorArbitrary extends Resistor implements NonlinearCom
     G[idxB][idxA] += stamp[1][0];
     G[idxB][idxB] += stamp[1][1];
 
+  }
+
+  @Override
+  public String getExpression() {
+    return expression;
   }
 
 }
